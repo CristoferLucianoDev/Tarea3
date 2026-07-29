@@ -26,8 +26,20 @@ async function obtenerTareaPorId(id) {
     return filas[0] || null;
 }
 
+async function actualizarTarea(id, { titulo, descripcion, estado, fecha_limite }) {
+    const [resultado] = await pool.query(
+        `UPDATE tareas
+         SET titulo = ?, descripcion = ?, estado = ?, fecha_limite = ?
+         WHERE id = ?`,
+        [titulo, descripcion, estado, fecha_limite || null, id]
+    );
+
+    return resultado.affectedRows > 0;
+}
+
 module.exports = {
     crearTarea,
     obtenerTareas,
-    obtenerTareaPorId
+    obtenerTareaPorId,
+    actualizarTarea
 };

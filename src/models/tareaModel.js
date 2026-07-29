@@ -37,9 +37,15 @@ async function actualizarTarea(id, { titulo, descripcion, estado, fecha_limite }
     return resultado.affectedRows > 0;
 }
 
+async function eliminarTarea(id) {
+    const [resultado] = await pool.query('DELETE FROM tareas WHERE id = ?', [id]);
+    return resultado.affectedRows > 0;
+}
+
 module.exports = {
     crearTarea,
     obtenerTareas,
     obtenerTareaPorId,
-    actualizarTarea
+    actualizarTarea,
+    eliminarTarea
 };

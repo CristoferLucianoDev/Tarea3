@@ -1,4 +1,4 @@
-const { crearTarea, obtenerTareas, obtenerTareaPorId, actualizarTarea } = require('../models/tareaModel');
+const { crearTarea, obtenerTareas, obtenerTareaPorId, actualizarTarea, eliminarTarea } = require('../models/tareaModel');
 
 async function crear(req, res) {
     try {
@@ -67,9 +67,28 @@ async function actualizar(req, res) {
     }
 }
 
+async function eliminar(req, res) {
+    try {
+        const { id } = req.params;
+
+        const tareaExistente = await obtenerTareaPorId(id);
+        if (!tareaExistente) {
+            return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+
+        await eliminarTarea(id);
+
+        return res.status(200).json({ mensaje: 'Tarea eliminada correctamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al eliminar la tarea' });
+    }
+}
+
 module.exports = {
     crear,
     listar,
     obtenerPorId,
-    actualizar
+    actualizar,
+    eliminar
 };

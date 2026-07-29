@@ -1,4 +1,4 @@
-const { crearTarea, obtenerTareas, obtenerTareaPorId } = require('../models/tareaModel');
+const { crearTarea, obtenerTareas, obtenerTareaPorId, actualizarTarea } = require('../models/tareaModel');
 
 async function crear(req, res) {
     try {
@@ -43,8 +43,33 @@ async function obtenerPorId(req, res) {
     }
 }
 
+async function actualizar(req, res) {
+    try {
+        const { id } = req.params;
+        const { titulo, descripcion, estado, fecha_limite } = req.body;
+
+        const tareaExistente = await obtenerTareaPorId(id);
+        if (!tareaExistente) {
+            return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+
+        if (!titulo) {
+            return res.status(400).json({ error: 'El campo titulo es obligatorio' });
+        }
+
+        await actualizarTarea(id, { titulo, descripcion, estado, fecha_limite });
+
+        const tareaActualizada = await obtenerTareaPorId(id);
+        return res.status(200).json(tareaActualizada);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al actualizar la tarea' });
+    }
+}
+
 module.exports = {
     crear,
     listar,
-    obtenerPorId
+    obtenerPorId,
+    actualizar
 };

@@ -16,6 +16,18 @@ async function crearTarea({ titulo, descripcion, estado, fecha_limite }) {
     };
 }
 
+async function obtenerTareas() {
+    const [filas] = await pool.query('SELECT * FROM tareas ORDER BY fecha_creacion DESC');
+    return filas;
+}
+
+async function obtenerTareaPorId(id) {
+    const [filas] = await pool.query('SELECT * FROM tareas WHERE id = ?', [id]);
+    return filas[0] || null;
+}
+
 module.exports = {
-    crearTarea
+    crearTarea,
+    obtenerTareas,
+    obtenerTareaPorId
 };

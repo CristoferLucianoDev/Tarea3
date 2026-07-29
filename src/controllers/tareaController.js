@@ -1,4 +1,4 @@
-const { crearTarea } = require('../models/tareaModel');
+const { crearTarea, obtenerTareas, obtenerTareaPorId } = require('../models/tareaModel');
 
 async function crear(req, res) {
     try {
@@ -17,6 +17,34 @@ async function crear(req, res) {
     }
 }
 
+async function listar(req, res) {
+    try {
+        const tareas = await obtenerTareas();
+        return res.status(200).json(tareas);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al listar las tareas' });
+    }
+}
+
+async function obtenerPorId(req, res) {
+    try {
+        const { id } = req.params;
+        const tarea = await obtenerTareaPorId(id);
+
+        if (!tarea) {
+            return res.status(404).json({ error: 'Tarea no encontrada' });
+        }
+
+        return res.status(200).json(tarea);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error al obtener la tarea' });
+    }
+}
+
 module.exports = {
-    crear
+    crear,
+    listar,
+    obtenerPorId
 };
